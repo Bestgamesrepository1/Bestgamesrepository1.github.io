@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Ejecutar SWF con Ruffle</title>
   <!-- Incluye Ruffle desde un CDN -->
-  <script src="https://unpkg.com/ruffle"></script>
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
   <style>
     #flashContainer {
       margin-top: 20px;
@@ -45,22 +45,29 @@
   <div id="flashContainer"></div>
 
   <script>
-    document.getElementById("loadButton").addEventListener("click", function() {
-      var swfFile = document.getElementById("swfSelect").value;
-      var container = document.getElementById("flashContainer");
-      
-      // Limpia el contenedor (por si ya se cargó otro juego)
-      container.innerHTML = "";
-      
-      // Crea el elemento ruffle-player y configura sus atributos
-      var player = document.createElement("ruffle-player");
-      player.src = swfFile; // asigna la ruta del SWF
-      // Ajusta el tamaño (puedes personalizar estos valores)
-      player.style.width = "800px";
-      player.style.height = "600px";
-      
-      // Inserta el ruffle-player en el contenedor
-      container.appendChild(player);
+    document.addEventListener("DOMContentLoaded", function() {
+      const loadButton = document.getElementById("loadButton");
+      loadButton.addEventListener("click", function() {
+        const swfFile = document.getElementById("swfSelect").value;
+        const container = document.getElementById("flashContainer");
+        
+        // Limpia el contenedor en caso de que ya se haya cargado otro juego
+        container.innerHTML = "";
+        
+        // Crea una instancia de RufflePlayer usando la API de Ruffle
+        const ruffle = window.RufflePlayer.newest();
+        const player = ruffle.createPlayer();
+        player.style.width = "800px";
+        player.style.height = "600px";
+        
+        // Agrega el reproductor al contenedor
+        container.appendChild(player);
+        
+        // Carga el archivo SWF seleccionado
+        player.load(swfFile).catch((error) => {
+          console.error("Error al cargar el SWF:", error);
+        });
+      });
     });
   </script>
 </body>
